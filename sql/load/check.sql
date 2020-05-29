@@ -1,0 +1,1 @@
+update DatosBase set Ámbito = 'Sin Información' where "CUE Anexo" in ('062304200','062309200','062309500');

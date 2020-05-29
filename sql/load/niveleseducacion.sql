@@ -1,0 +1,15 @@
+insert into NivelEducacion (nombre) values 
+ ('Jardin_maternal')
+,('Inicial')
+,('Primaria')
+,('Secundaria')
+,('Secundaria_Tecnica_INET')
+,('Superior_no_Universitario')
+,('Superior_No_Universitario_INET')
+,('Cursos_y_Talleres')
+,('Temprana')
+,('Integración')
+,('EGB3')
+,('Alfabetización')
+,('Formación_Profesional')
+,('Formación_Profesional_INET');
