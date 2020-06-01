@@ -1,4 +1,4 @@
-insert into TedNivEscuela (idEscuela, idTipoNivel)
+insert into TedNivEscuela (escuela_id, tipoNivelEducacion_id)
 select escu.id, v.idTN
 from Escuela escu
 inner join Comun v

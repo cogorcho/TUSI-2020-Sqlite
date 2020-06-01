@@ -4,7 +4,7 @@
 -- Tabla: Localidad
 -- Generar data, FK 
 -- --------------------------------------
-insert into Localidad(idProvincia, codigo, nombre)
+insert into Localidad(provincia_id, codigo, nombre)
 select distinct Provincia.id, DatosBase."Código Localidad", DatosBase.Localidad
 from DatosBase
 inner join Provincia

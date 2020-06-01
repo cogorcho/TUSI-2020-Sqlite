@@ -1,7 +1,6 @@
 insert into Escuela
-(idLocalidad,idSector,idAmbito,codigo,nombre,domicilio,codpos)     
-select l.id, a.id, s.id, b."CUE Anexo", b.nombre,
-    b.Domicilio, b.cp
+(localidad_id,sector_id,ambito_id,codigo,nombre)     
+select l.id, a.id, s.id, b."CUE Anexo", b.nombre
 from DatosBase b 
 inner join Provincia p
 on p.nombre = b.Jurisdicción
