@@ -13,6 +13,8 @@ class Persona(Base):
     # Columnas de la tabla Persona
     id = Column(Integer, primary_key=True)
     nombre = Column(String(255), nullable=False)
+    def json(self):
+        return {"id": self.id, "nombre": self.nombre}
 
 class Domicilio(Base):
     __tablename__ = 'Domicilio'
@@ -30,18 +32,25 @@ class Ambito(Base):
     # Columnas de la tabla Ambito
     id = Column(Integer, primary_key=True)
     nombre = Column(String(255), nullable=False)
+    def json(self):
+        return {"id":self.id, "nombre": self.nombre}
 
 class Sector(Base):
     __tablename__ = 'Sector'
     # Columnas de la tabla Sector
     id = Column(Integer, primary_key=True)
     nombre = Column(String(255), nullable=False)
+    def json(self):
+        return {"id":self.id, "nombre": self.nombre}
 
 class Provincia(Base):
     __tablename__ = 'Provincia'
     # Columnas de la tabla Provincia
     id = Column(Integer, primary_key=True)
     nombre = Column(String(255), nullable=False)
+    def json(self):
+        return {"id":self.id, "nombre": self.nombre}
+
 
 class Localidad(Base):
     __tablename__ = 'Localidad'
@@ -51,6 +60,14 @@ class Localidad(Base):
     codigo = Column(String(32), nullable=False) 
     provincia_id = Column(Integer, ForeignKey('Provincia.id'))
     provincia = relationship(Provincia)
+    def json(self):
+        return {
+            "id":self.id, 
+            "nombre": self.nombre,
+            "codigo": self.codigo, 
+            "provincia_id": self.provincia.id, 
+            "provincia": self.provincia.nombre
+        }
 
 class Escuela(Base):
     __tablename__ = 'Escuela'
@@ -64,6 +81,21 @@ class Escuela(Base):
     sector = relationship(Sector)
     ambito = relationship(Ambito)
     localidad = relationship(Localidad)
+
+    def json(self):
+        return {
+            "id":self.id, 
+            "nombre": self.nombre,
+            "codigo": self.codigo, 
+            "sector_id" : self.sector.id,
+            "sector": self.sector.nombre,
+            "ambito_id": self.ambito.id,
+            "ambito" : self.ambito.nombre,
+            "localidad_id": self.localidad.id,
+            "localidad": self.localidad.nombre,
+            "provincia_id": self.localidad.provincia.id, 
+            "provincia": self.localidad.provincia.nombre
+        }
 
 class DomicilioEscuela(Base):
     __tablename__ = 'DomicilioEscuela'

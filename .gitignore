@@ -1,3 +1,5 @@
 venv/
 .vscode/
 *.log
+model/__pycache__/*.pyc 
+modulos/__pycache__/*.pyc
