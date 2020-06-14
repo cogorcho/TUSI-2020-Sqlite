@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h3 class="text-center">{{ data.titulo }}</h3>
+    <table id="keyvaltable" class="table table-hover table-striped table-bordered table-sm">
+    <thead class="thead-dark">
+        <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Código</th>
+            <th>Sector</th>
+            <th>Ámbito</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for rec in data.recs %}
+            <tr>
+                <td>{{rec.id}}</td>
+                <td>{{rec.nombre.title()}}</td>
+                <td>{{rec.codigo}}</td>
+                <td>{{rec.sector}}</td>
+                <td>{{rec.ambito}}</td>
+            </tr>
+        {% endfor%}
+    </tbody>
+    </table>
+</div>
+{% if data.url == 'escuela' %}
+<script>
+    $(document).ready(function(){
+    $("table").delegate('tr', 'click', function() {
+        id = $(this).find('td:first').text()
+        url = '/escuela/' + id
+        $(location).attr('href',url);
+        console.log(url)
+    });
+    });
+</script>
+{% endif %}
+{% endblock %}

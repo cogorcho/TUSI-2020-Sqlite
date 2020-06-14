@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<form class="inner" method="post" action="/reset">
+    <h1>{{data.tituloform}}</h1>
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Ingrese email">
+        <small id="emailHelp" class="form-text text-muted">Nunca será compartido.</small>
+    </div>
+    <div class="form-group">
+        <label for="password">Password Actual</label>
+        <input type="password" class="form-control" name="oldpassword" id="password" placeholder="Password">
+    </div>
+    <div class="form-group">
+        <label for="password">Nueva Password</label>
+        <input type="password" class="form-control" name="newpassword" id="password" placeholder="Password">
+    </div>
+    <button type="submit" class="btn btn-primary">Cambiar Password</button>
+</form>
+{% endblock %}

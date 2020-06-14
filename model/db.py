@@ -13,7 +13,7 @@ class Persona(Base):
     # Columnas de la tabla Persona
     id = Column(Integer, primary_key=True)
     nombre = Column(String(255), nullable=False)
-    def json(self):
+    def _dict(self):
         return {"id": self.id, "nombre": self.nombre}
 
 class Domicilio(Base):
@@ -23,16 +23,24 @@ class Domicilio(Base):
     calle = Column(String(255), nullable=False)
     numero = Column(String(255), nullable=False)
     codpos = Column(String(255), nullable=False)
-    calle = Column(String(255), nullable=False)
     persona_id = Column(Integer, ForeignKey('Persona.id'))
     persona = relationship(Persona)
+
+    def _dict(self):
+        return {
+            "id": self.id,
+            "calle": self.calle,
+            "numero": self.numero,
+            "codpos": self.codpos,
+            "persona_id": self.persona.id
+        }
 
 class Ambito(Base):
     __tablename__ = 'Ambito'
     # Columnas de la tabla Ambito
     id = Column(Integer, primary_key=True)
     nombre = Column(String(255), nullable=False)
-    def json(self):
+    def _dict(self):
         return {"id":self.id, "nombre": self.nombre}
 
 class Sector(Base):
@@ -40,7 +48,7 @@ class Sector(Base):
     # Columnas de la tabla Sector
     id = Column(Integer, primary_key=True)
     nombre = Column(String(255), nullable=False)
-    def json(self):
+    def _dict(self):
         return {"id":self.id, "nombre": self.nombre}
 
 class Provincia(Base):
@@ -48,7 +56,7 @@ class Provincia(Base):
     # Columnas de la tabla Provincia
     id = Column(Integer, primary_key=True)
     nombre = Column(String(255), nullable=False)
-    def json(self):
+    def _dict(self):
         return {"id":self.id, "nombre": self.nombre}
 
 
@@ -60,7 +68,7 @@ class Localidad(Base):
     codigo = Column(String(32), nullable=False) 
     provincia_id = Column(Integer, ForeignKey('Provincia.id'))
     provincia = relationship(Provincia)
-    def json(self):
+    def _dict(self):
         return {
             "id":self.id, 
             "nombre": self.nombre,
@@ -82,7 +90,7 @@ class Escuela(Base):
     ambito = relationship(Ambito)
     localidad = relationship(Localidad)
 
-    def json(self):
+    def _dict(self):
         return {
             "id":self.id, 
             "nombre": self.nombre,
@@ -108,17 +116,32 @@ class DomicilioEscuela(Base):
     escuela_id = Column(Integer, ForeignKey('Escuela.id'))
     escuela = relationship(Escuela)
 
+    def _dict(self):
+        return {
+            "id": self.id,
+            "calle": self.calle,
+            "numero": self.numero,
+            "codpos": self.codpos,
+            "escuela_id": self.escuela.id
+        }
+
 class TipoEducacion(Base):
     __tablename__ = 'TipoEducacion'
     # Columnas de la tabla TipoEducacion
     id = Column(Integer, primary_key=True)
     nombre = Column(String(255), nullable=False)
+    
+    def _dict(self):
+        return {"id":self.id, "nombre": self.nombre}
 
 class NivelEducacion(Base):
     __tablename__ = 'NivelEducacion'
     # Columnas de la tabla NivelEducacion
     id = Column(Integer, primary_key=True)
     nombre = Column(String(255), nullable=False)
+
+    def _dict(self):
+        return {"id":self.id, "nombre": self.nombre}
 
 class TipoNivelEducacion(Base):
     __tablename__ = 'TipoNivelEducacion'
@@ -129,6 +152,13 @@ class TipoNivelEducacion(Base):
     TipoEducacion = relationship(TipoEducacion)
     NivelEducacion = relationship(NivelEducacion)
 
+    def _dict(self):
+        return {
+            "id":self.id, 
+            "tipoeducacion_id": self.tipoeducacion_id,
+            "niveleducacion_id" : self.niveleducacion_id
+        }
+
 class TedNivEscuela(Base):
     __tablename__ = 'TedNivEscuela'
     # Columnas de la tabla TedNivEscuela
@@ -136,7 +166,18 @@ class TedNivEscuela(Base):
     escuela_id = Column(Integer, ForeignKey('Escuela.id'))
     tipoNivelEducacion_id = Column(Integer, ForeignKey('TipoNivelEducacion.id'))  
     escuela = relationship(Escuela) 
-    tiponiveltducacion = relationship(TipoNivelEducacion) 
+    tiponiveleducacion = relationship(TipoNivelEducacion) 
+
+    def _dict(self):
+       return {
+            "id":self.id, 
+            "escuela_id":self.escuela_id,
+            "tipoNivelEducacion_id": self.tipoNivelEducacion_id
+            #"tipoeducacion_id": self.TipoNivelEducacion.tipoeducacion.id,
+            #"tipoeducacion": self.TipoNivelEducacion.tipoeducacion.nombre,
+            #"niveleducacion_id" : self.TipoNivelEducacion.Niveleducacion.id,
+            #"niveleducacion": self.TipoNivelEducacion.Niveleducacion.nombre        
+    }
 
 class Usuario(Base):
     __tablename__ = 'Usuario'
@@ -149,6 +190,13 @@ class Usuario(Base):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def _dict(self):
+        return {
+            "id" : self.id,
+            "email" : self.email,
+            "password_hash": self.password_hash
+        }
 
 # crear el engine para guardar los datos. La BD sqlite es un archivo
 # gente.db
