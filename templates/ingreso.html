@@ -1,5 +1,6 @@
-{% extends "base.html" %}
+{% extends "base2.html" %}
 {% block content %}
+<div class="outer">
 <form class="inner" method="post" action="/ingreso">
   <h1>{{data.tituloform}}</h1>
   <div class="form-group">
@@ -19,4 +20,5 @@
 
   <button type="submit" class="btn btn-primary">Registrarse</button>
 </form>
+</div>
 {% endblock %}

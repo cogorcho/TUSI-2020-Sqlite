@@ -1,13 +1,15 @@
 from modulos.csv import CSV
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from flask import Flask, request, render_template
 import json
+import modulos.auth as auth
+import modulos.datos as datos
 
 from model.db import (
     Base, 
     Persona, 
-    Usuario, 
+    #Usuario, 
     Provincia, 
     Sector, 
     Ambito, 
@@ -21,7 +23,7 @@ from model.db import (
 
 engine = create_engine('sqlite:///db/escuela.db')
 Base.metadata.bind = engine
-DBSession = sessionmaker(bind=engine)
+DBSession = scoped_session(sessionmaker(bind=engine))
 
 app = Flask(__name__)
 
@@ -32,35 +34,6 @@ def index():
     }
     return render_template('inicio.html', data=data)
 
-@app.route('/persona/<nombre>', methods=['GET','POST'])
-def persona(nombre):
-    session = DBSession()
-    if request.method == 'POST':
-        p = Persona(nombre=nombre)
-        session.add(p)
-        session.commit()
-        return '<h1>%s creado  Ok</h1>'%(nombre)
-    else:
-        p = session.query(Persona).filter(Persona.nombre == nombre).first()
-        if p is None:
-            return '<h1>No existe la persona de nombre %s</h1>' % (nombre)
-        else:
-            return json.dumps(p.dict(), ensure_ascii=False)
-
-@app.route('/personas')
-def listar_personas():
-    session = DBSession()
-    persons = session.query(Persona).all()
-    ret = [p._dict() for p in persons]
-    return json.dumps(ret)
-
-
-def listar_persona(id):
-    session = DBSession()
-    p = session.query(Persona).filter(Persona.id == id).all()
-    for per in p:
-        print(per.nombre)
-
 @app.route('/registro', methods=['GET','POST'])
 def agregar_usuario():
     data = {
@@ -68,20 +41,12 @@ def agregar_usuario():
         "tituloform": "Alta de Usuario"
     }
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        print(email, password)
-        session = DBSession()
-        u = Usuario(email=email)
-        u.set_password(password)
-        session.add(u)
-        session.commit()
-        return '<h1>Usuario %s registrado' % (email)
+        result = auth.agregar_usuario(request, DBSession())
+        return json.dumps(result)
     elif request.method == 'GET':
         return render_template('registro.html', data=data)
     else:
         return render_template('nomethod.html')
-
 
 @app.route('/ingreso', methods=['GET','POST'])
 def buscar_usuario():
@@ -90,16 +55,12 @@ def buscar_usuario():
         "tituloform" : "Ingreso al Sistema"
     }
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        session = DBSession()
-        u = session.query(Usuario).filter_by(email=email).first()
-        if u is None:
-            return '<h1>Usuario %s incorrecto' % (email)
-        if not u.check_password(password):
-            return '<h1>Usuario %s password incorrecta' % (email)
-        data["titulo"] = "Menú"
-        return render_template('menu.html', data=data)
+        result = auth.buscar_usario(request,DBSession())
+        if result['resultado'] == 'OK':
+            data["titulo"] = "Menú"
+            return render_template('menu.html', data=data)
+        else:
+            return json.dumps(result)
     elif request.method == 'GET':
         return render_template('ingreso.html', data=data)
     else:
@@ -112,18 +73,8 @@ def reset_password():
         "tituloform": "Cambio de Password"
     }
     if request.method == 'POST':
-        email = request.form.get('email')
-        oldpassword = request.form.get('oldpassword')
-        newpassword = request.form.get('newpassword')
-        session = DBSession()
-        u = session.query(Usuario).filter_by(email=email).first()
-        if u is None:
-            return '<h1>Usuario %s incorrecto' % (email)
-        if not u.check_password(oldpassword):
-            return '<h1>Usuario %s password original incorrecta' % (email)
-        u.set_password(newpassword)
-        session.commit()
-        return '<h1>Password de %s actualizada' % (email)
+        result = auth.reset_password(request, DBSession())
+        return json.dumps(result)
     elif request.method == 'GET':
         return render_template('reset.html', data=data)
     else:
@@ -136,57 +87,57 @@ def borrar_usuario():
         "tituloform": "Baja de Usuario"
     }
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        session = DBSession()
-        u = session.query(Usuario).filter_by(email=email).first()
-        if u is None:
-            return '<h1>Usuario %s incorrecto' % (email)
-        if not u.check_password(password):
-            return '<h1>Usuario %s, password incorrecta' % (email)
-        session.delete(u)
-        session.commit()
-        return '<h1>Usuario %s eliminado. A la bosta!' % (email)
+        result = auth.borrar_usuario(request, DBSession())
+        return json.dumps(result)
     elif request.method == 'GET':
         return render_template('baja.html', data=data)
     else:
         return render_template('nomethod.html')
 
 @app.route('/provincias')
-def listar_provincias():
-    session = DBSession()
-    provs = session.query(Provincia).all()
-    ret = [p._dict() for p in provs]
+def provincias():
+    #session = DBSession()
+    #provs = session.query(Provincia).all()
+    #ret = [p._dict() for p in provs]
     data = {
         "titulo": "Provincias",
-        "recs" : ret
+        "recs" : datos.provincias(DBSession())
     }
     return render_template('keyval.html', data=data)
 
 @app.route('/sectores')
-def listar_sectores():
-    session = DBSession()
-    secs = session.query(Sector).all()
-    ret = [p._dict() for p in secs]
+def sectores():
     data = {
         "titulo": "Sectores",
-        "recs" : ret
+        "recs" : datos.sectores(DBSession())
     }
     return render_template('keyval.html', data=data)
 
 @app.route('/ambitos')
-def listar_ambitos():
-    session = DBSession()
-    ambs = session.query(Ambito).all()
-    ret = [p._dict() for p in ambs]
+def ambitos():
     data = {
         "titulo": "Ambitos",
-        "recs" : ret
+        "recs" : datos.ambitos(DBSession())
     }
     return render_template('keyval.html', data=data)
 
+
+@app.route('/buscar')
+def show():
+    session = DBSession()
+    data = {
+        "titulo": "Buscar escuela",
+        "recs" : {
+                "provs" : session.query(Provincia).all(),
+                "ambs" : session.query(Ambito).all(),
+                "secs" : session.query(Sector).all()
+            },
+        "url" : None
+    }
+    return render_template('buscar.html', data=data)             
+
 @app.route('/localidades')
-def localicades_provincia():
+def localidades_provincia():
     session = DBSession()
     provs = session.query(Provincia).all()
     ret = [p._dict() for p in provs]
@@ -200,15 +151,12 @@ def localicades_provincia():
 @app.route('/localidad/<pciaid>')
 def listar_localidades(pciaid):
     session = DBSession()
-    pcia = session.query(Provincia).filter_by(id=pciaid).first()
-    locs = session.query(Localidad).filter_by(provincia_id=pciaid).all()
+    locs = session.query(Localidad).filter_by(provincia_id=pciaid).order_by(Localidad.nombre).all()
     ret = [p._dict() for p in locs]
     data = {
-        "titulo": "Escuelas por localidad: %s" % (pcia.nombre),
         "recs" : ret,
-        "url" : 'escuelas'
     }
-    return render_template('localidades.html', data=data)
+    return json.dumps(data)
 
 @app.route('/escuela/<id>')
 def escuela(id):
@@ -238,15 +186,39 @@ def escuela(id):
     }
     return render_template('escuela.html', data=data) 
 
-@app.route('/escuelas/<locid>')
-def escuelas(locid):
+@app.route('/escuelas/<int:pciaid>/<int:locid>/<int:secid>/<int:ambid>')
+def escuelas(pciaid, locid, secid, ambid):
+    print('escuelas',pciaid, locid, secid, ambid)
     session = DBSession()
-    loc = session.query(Localidad).filter_by(id=locid).first()
-    escs = session.query(Escuela).filter_by(localidad_id=locid).all()
+    prov = session.query(Provincia).filter_by(id=pciaid).first()
+    nombreloc = ""
+    if locid == 0:
+        print("locid es 0",locid)
+        #sql = session.query(Escuela).join(Localidad).filter(Localidad.provincia_id==locid)
+        escs = session.query(Escuela).join(Localidad).filter(Localidad.provincia_id==locid).all()
+        for e in escs:
+            print(e)
+        nombreloc = "Todas las localidades"
+    else:
+        loc = session.query(Localidad).filter_by(id=locid).first()
+        print(locid,loc)
+        nombreloc = loc.nombre
+        if secid == 0 and ambid == 0:   
+            escs = session.query(Escuela).filter_by(localidad_id=locid).all()
+        elif secid != 0 and ambid == 0:
+            escs = session.query(Escuela)\
+                .filter_by(localidad_id=locid, sector_id=secid).all()
+        elif secid == 0 and ambid != 0:
+            escs = session.query(Escuela)\
+                .filter_by(localidad_id=locid, ambito_id=ambid).all()
+        elif secid != 0 and ambid != 0:
+            escs = session.query(Escuela)\
+                .filter_by(localidad_id=locid, \
+                    sector_id=secid, ambito_id=ambid).all()
+
     ret = [p._dict() for p in escs]
-    #return json.dumps(ret, ensure_ascii=False)
     data = {
-        "titulo": "Escuelas por localidad: %s, %s" % (loc.nombre.title(), loc.provincia.nombre),
+        "titulo": "Escuelas por localidad: %s, %s" % (nombreloc.title(), prov.nombre.title()),
         "recs" : ret,
         "url" : 'escuela'
     }

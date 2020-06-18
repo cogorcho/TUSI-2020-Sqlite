@@ -1,5 +1,6 @@
-{% extends "base.html" %}
+{% extends "base2.html" %}
 {% block content %}
+<div class="outer">
 <form class="inner" method="post" action="/baja">
     <h1>{{data.tituloform}}</h1>
     <div class="form-group">
@@ -14,4 +15,7 @@
 
     <button type="submit" class="btn btn-danger">Confirmar baja</button>
 </form>
+
+</div>
+
 {% endblock%}
