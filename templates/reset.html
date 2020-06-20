@@ -5,17 +5,38 @@
     <h1>{{data.tituloform}}</h1>
     <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Ingrese email">
-        <small id="emailHelp" class="form-text text-muted">Nunca será compartido.</small>
+        {% if data.email is none %}
+            <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Ingrese email" autofocus>
+        {% else %}
+            {% if data.mensaje == "Usuario incorrecto" %}
+                <input value={{data.email}} type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Ingrese email" autofocus>
+            {% else %}
+                <input value={{data.email}} type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Ingrese email">
+            {% endif %}
+        {% endif %}
+            <small id="emailHelp" class="form-text text-muted">Nunca será compartido.</small>
     </div>
     <div class="form-group">
         <label for="password">Password Actual</label>
-        <input type="password" class="form-control" name="oldpassword" id="password" placeholder="Password">
-    </div>
+        {% if data.mensaje == "Password original incorrecta" %}
+            <input type="password" class="form-control" name="oldpassword" id="password" placeholder="Password" autofocus>
+        {% else %}
+            <input type="password" class="form-control" name="oldpassword" id="password" placeholder="Password">
+        {% endif %}
+        </div>
     <div class="form-group">
         <label for="password">Nueva Password</label>
         <input type="password" class="form-control" name="newpassword" id="password" placeholder="Password">
     </div>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for m in messages %}
+    <label class="text-danger">{{ m }}</label><br>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
     <button type="submit" class="btn btn-primary">Cambiar Password</button>
 </form>
 </div>

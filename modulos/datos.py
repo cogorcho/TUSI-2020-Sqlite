@@ -1,6 +1,9 @@
+# ---------------------------------------
+# A futuro: Concentrar la extracción de
+# datos en este módulo
+# ---------------------------------------
+
 from .db import (
-#    Persona, 
-#    Usuario, 
     Provincia, 
     Sector, 
     Ambito, 

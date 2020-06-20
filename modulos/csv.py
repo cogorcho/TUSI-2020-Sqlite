@@ -1,5 +1,10 @@
 import os
 
+# ----------------------------------------------------------
+# Tratamiento manual de un csv
+# En caso de habelr comas dentro de cadenas entre comillas
+# ----------------------------------------------------------
+
 class CSV():
     def __init__(self, csvfile=None):
         if csvfile is None:

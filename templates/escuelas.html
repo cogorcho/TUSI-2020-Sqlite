@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base2.html" %}
 {% block content %}
 <div class="container">
     <h3 class="text-center">{{ data.titulo }}</h3>
@@ -28,12 +28,12 @@
 {% if data.url == 'escuela' %}
 <script>
     $(document).ready(function(){
-    $("table").delegate('tr', 'click', function() {
-        id = $(this).find('td:first').text()
-        url = '/escuela/' + id
-        $(location).attr('href',url);
-        console.log(url)
-    });
+        $("table").delegate('tr', 'click', function() {
+            id = $(this).find('td:first').text()
+            url = '/escuela/' + id
+            $(location).attr('href',url);
+            console.log(url)
+        });
     });
 </script>
 {% endif %}

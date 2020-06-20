@@ -1,53 +1,72 @@
 {% extends "base2.html" %}
 {% block content %}
+<script>
+    function getdatanow(provid) {
+        url = "/localidad/" + provid;
+
+        $.getJSON(url).done(function(data){
+            dl = data.recs.length;
+            $("#loc").empty();
+            for (var i = 0; i < dl; i++) {
+                $('#loc').append($('<option>').val(data.recs[i].id).text(data.recs[i].nombre)); 
+            }
+        });
+    }
+
+    $(document).ready(function() {
+      //alert("document ready occurred!");
+      provid = $('select[name="prov"] option').filter(':selected').attr("id");
+      //alert(prov);
+      if (prov != 0) {
+        getdatanow(provid)
+      }
+    });
+</script>
+
 <div class="outer">
-<div class="inner">
+
+<form class="inner">
     <h1>Buscar Escuelas</h1>
-<form class="form-inline"></form>
-<div class="form-group">
-    <label for="prov" class="col-sm-2">Provincia</label>
+    <div class="form-group">
+        <label for="prov" class="col-sm-2">Provincia</label>
 
-    <select name="prov" id="prov" class="form-control">
-        <option id="0">Seleccionar</option>
-        {% for p in data['recs']['provs'] %}
-            <option id="{{p.id}}">{{p.nombre}}</option>
-        {% endfor %}
-    </select>
-</div>
+        <select name="prov" id="prov" class="form-control">
+            <option id="0">Seleccionar</option>ºº
+            {% for p in data['recs']['provs'] %}
+                <option id="{{p.id}}">{{p.nombre}}</option>
+            {% endfor %}
+        </select>
+    </div>
 
-<div class="form-group">
-    <label for="loc" class="col-sm-2">Localidad</label>
-    <select name="loc" id="loc" class="form-control">
+    <div class="form-group">
+        <label for="loc" class="col-sm-2">Localidad</label>
+        <select name="loc" id="loc" class="form-control">
 
-    </select>
-</div>
+        </select>
+    </div>
 
-<div class="form-group">
-    <label for="sec" class="col-sm-2">Sector</label>
-    <select name="sec" id="sec" class="form-control">
-        <option id="0">Todos</option>
-        {% for p in data['recs']['secs'] %}
-            <option id="{{p.id}}">{{p.nombre}}</option>
-        {% endfor %}
-    </select>
-</div>
+    <div class="form-group">
+        <label for="sec" class="col-sm-2">Sector</label>
+        <select name="sec" id="sec" class="form-control">
+            <option id="0">Todos</option>
+            {% for p in data['recs']['secs'] %}
+                <option id="{{p.id}}">{{p.nombre}}</option>
+            {% endfor %}
+        </select>
+    </div>
 
-<div class="form-group">
-    <label for="amb" class="col-sm-2">Ámbito</label>
-    <select name="amb" id="amb" class="form-control">
-        <option id="0">Todos</option>
-        {% for p in data['recs']['ambs'] %}
-            <option id="{{p.id}}">{{p.nombre}}</option>
-        {% endfor %}
-    </select>
-</div>
+    <div class="form-group">
+        <label for="amb" class="col-sm-2">Ámbito</label>
+        <select name="amb" id="amb" class="form-control">
+            <option id="0">Todos</option>
+            {% for p in data['recs']['ambs'] %}
+                <option id="{{p.id}}">{{p.nombre}}</option>
+            {% endfor %}
+        </select>
+    </div>
 
-
-<button type="submit" id="buscar" class="btn btn-primary">Buscar</button>
+    <button type="button" id="buscar" class="btn btn-primary">Buscar</button>
 </form>
-
-</div>
-
 </div>
 
 <script>
@@ -66,12 +85,10 @@
     }
 
     function getdata() {
-        console.log('getdata')
         provsel = $(this).children("option:selected").val();
         provid = $(this).children("option:selected").attr("id");
 
         url = "/localidad/" + provid;
-        console.log(url);
 
         $.getJSON(url).done(function(data){
             dl = data.recs.length;
@@ -100,15 +117,20 @@
         ambid = $(this).children("option:selected").attr("id");
     });
 
-    $( "#buscar" ).click(function() {
+    $("#buscar").click(function() {
         if (provid == 0) {
             alert("La provincia es obligatoria")
             return
         }
         var url = '/escuelas/' + provid + "/" + locid + "/" + secid + "/" + ambid
-        console.log( url );
         location.href=url;
     });
+
+    $(window).load(function() {
+        alert("load");
+    });
+
+
 
 </script>
 {% endblock%}

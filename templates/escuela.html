@@ -1,51 +1,51 @@
-{% extends "base.html" %}
+{% extends "base2.html" %}
 {% block content %}
 <div class="container">
     <h3 class="text-center">{{ data.titulo }}</h3>
     <table id="keyvaltable" class="table table-striped table-bordered table-sm">
     <tbody>
         <tr>
-            <td class="font-weight-bold">#</td>
-            <td>{{data.rec.id}}</td>
+            <td class="font-weight-bold text-right">#</td>
+            <td class="text-left">{{data.rec.id}}</td>
         </tr>
         <tr>
-            <td class="font-weight-bold">Nombre</td>
-            <td>{{data.rec.nombre.title()}}</td>
+            <td class="font-weight-bold text-right">Nombre</td>
+            <td class="text-left">{{data.rec.nombre.title()}}</td>
         </tr>
         <tr>
-            <td class="font-weight-bold">Codigo</td>
-            <td>{{data.rec.codigo}}</td>
+            <td class="font-weight-bold text-right">Codigo</td>
+            <td class="text-left">{{data.rec.codigo}}</td>
         </tr>
         <tr>
-            <td class="font-weight-bold">Sector</td>
-            <td>{{data.rec.sector}}</td>
+            <td class="font-weight-bold text-right">Sector</td>
+            <td class="text-left">{{data.rec.sector}}</td>
         </tr>
         <tr>
-            <td class="font-weight-bold">Ámbito</td>
-            <td>{{data.rec.ambito}}</td>
+            <td class="font-weight-bold text-right">Ámbito</td>
+            <td class="text-left">{{data.rec.ambito}}</td>
         </tr>
         <tr>
-            <td class="font-weight-bold">Localidad</td>
-            <td>{{data.rec.localidad.title()}}</td>
+            <td class="font-weight-bold text-right">Localidad</td>
+            <td class="text-left">{{data.rec.localidad.title()}}</td>
         </tr>        
         <tr>
-            <td class="font-weight-bold">Provincia</td>
-            <td>{{data.rec.provincia}}</td>
+            <td class="font-weight-bold text-right">Provincia</td>
+            <td class="text-left">{{data.rec.provincia}}</td>
         </tr>
         <tr>
-            <td class="font-weight-bold">Domicilio</td>
-            <td>{{data.rec.domicilio.calle.title()}}</td>
+            <td class="font-weight-bold text-right">Domicilio</td>
+            <td class="text-left">{{data.rec.domicilio.calle.title()}}</td>
         </tr>
         <tr>
-            <td class="font-weight-bold">C.P.</td>
-            <td>{{data.rec.domicilio.codpos}}</td>
+            <td class="font-weight-bold text-right">C.P.</td>
+            <td class="text-left">{{data.rec.domicilio.codpos}}</td>
         </tr> 
     </tbody>
     </table>
     <h4 class="display-6">Educación</h4>
     <ul class="list-group ml-5">
         {% for ne in data.rec.tne %}  
-            <li>{{ne.tipo}} {{ne.nivel}}</li>
+            <li class="list-group-item m-0">{{ne.tipo}} {{ne.nivel}}</li>
         {% endfor %}
     </ul>
 
